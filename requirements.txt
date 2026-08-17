@@ -1,0 +1,7 @@
+customtkinter>=5.2
+openpyxl>=3.1
+reportlab>=4.0
+yt-dlp>=2025.1.1   # сбор TikTok
+instagrapi>=2.1       # сбор Instagram (мобильный API)
+instaloader>=4.14     # запасной путь Instagram + чтение сессии из браузера
+browser_cookie3>=0.19  # сессия Instagram из браузера, без пароля

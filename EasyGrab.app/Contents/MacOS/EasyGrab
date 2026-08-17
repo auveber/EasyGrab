@@ -1,0 +1,27 @@
+#!/bin/bash
+# Внутренний запускатель бандла. Лежит в EasyGrab.app/Contents/MacOS/,
+# поэтому папка приложения — на три уровня выше.
+HERE="$(cd "$(dirname "$0")/../../.." && pwd)"
+cd "$HERE" || exit 1
+
+if [ -x "venv/bin/python" ]; then
+    PYTHON="$HERE/venv/bin/python"
+else
+    PYTHON="$(command -v python3)"
+fi
+
+if [ -z "$PYTHON" ]; then
+    osascript -e 'display alert "EasyGrab" message "Не найден Python 3. Установите его с python.org." as critical'
+    exit 1
+fi
+
+# Ошибку показываем системным окном: у бандла нет консоли, и без этого
+# запуск просто молча ничего бы не сделал.
+ERRLOG="$(mktemp)"
+"$PYTHON" main.py 2>"$ERRLOG"
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+    MSG="$(tail -c 800 "$ERRLOG" | tr '"' "'")"
+    osascript -e "display alert \"EasyGrab не запустился\" message \"$MSG\" as critical"
+fi
+rm -f "$ERRLOG"
